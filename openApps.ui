@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>OpenApps</class>
+ <widget class="QWidget" name="OpenApps">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,11 +20,20 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="insert_website_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>100</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
          </property>
          <property name="text">
           <string>Insert Website</string>
@@ -33,6 +42,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="remove_website_button">
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
          <property name="text">
           <string>Remove Website</string>
          </property>
@@ -40,6 +52,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="run_website_button">
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
          <property name="text">
           <string>Run</string>
          </property>
@@ -71,6 +86,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QPushButton" name="insert_desktop_button">
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
          <property name="text">
           <string>Insert Desktop App</string>
          </property>
@@ -78,6 +96,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="remove_desktop_button">
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
          <property name="text">
           <string>Remove Desktop App</string>
          </property>
@@ -85,6 +106,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="run_desktop_button">
+         <property name="styleSheet">
+          <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+         </property>
          <property name="text">
           <string>Run</string>
          </property>
@@ -114,6 +138,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="run_all_button">
+       <property name="styleSheet">
+        <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+       </property>
        <property name="text">
         <string>Run All</string>
        </property>
@@ -121,6 +148,9 @@
      </item>
      <item>
       <widget class="QRadioButton" name="run_on_start_radio">
+       <property name="styleSheet">
+        <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;</string>
+       </property>
        <property name="text">
         <string>Run On Start Up</string>
        </property>
