@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton
-import re
+import re, json, os.path as file
 
 
 class Ui_OpenApps(QWidget):
@@ -101,6 +101,7 @@ class Ui_OpenApps(QWidget):
 
         self.retranslateUi(OpenApps)
         QtCore.QMetaObject.connectSlotsByName(OpenApps)
+        self.load_json()
 
     def retranslateUi(self, OpenApps):
         _translate = QtCore.QCoreApplication.translate
@@ -114,11 +115,35 @@ class Ui_OpenApps(QWidget):
         self.run_all_button.setText(_translate("OpenApps", "Run All"))
         self.run_on_start_radio.setText(_translate("OpenApps", "Run On Start Up"))
 
+    def load_json(self):
+        if file.isfile("data.json"):
+            try:
+                with open("data.json", "r") as json_file:
+                    self.data = json.load(json_file)
+                    
+            except IOError:
+                print("there was an error")
+        elif not file.isfile("data.json"):
+            with open("data.json", "w") as json_file:
+                    data_object = {
+                        'desktop': [],
+                        'website': []
+                    }
+                    json.dump(data_object, json_file)
+        
+
+
     def open_explorer_desktop(self):
-        path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
-        file = re.search("(?<=/)(\w*)(?=\.exe)", path[0]).group()
-        app = QRadioButton()
-        app.setText(file)
+        self.path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
+        file = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
+        self.app = QRadioButton()
+        self.app.setText(file)
+        self.add_data()
+
+    def add_data(self):
+        pass
+        
+
         
         
 
