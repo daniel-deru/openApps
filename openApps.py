@@ -1,3 +1,4 @@
+from os import error
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton
 import re, json, os.path as file
@@ -116,31 +117,55 @@ class Ui_OpenApps(QWidget):
         self.run_on_start_radio.setText(_translate("OpenApps", "Run On Start Up"))
 
     def load_json(self):
-        if file.isfile("data.json"):
-            try:
-                with open("data.json", "r") as json_file:
-                    self.data = json.load(json_file)
-                    
-            except IOError:
-                print("there was an error")
-        elif not file.isfile("data.json"):
-            with open("data.json", "w") as json_file:
-                    data_object = {
+        data_template = {
                         'desktop': [],
                         'website': []
                     }
-                    json.dump(data_object, json_file)
-        
+        if file.isfile("data.json"):
+            if file.getsize("data.json") == 0:
+                try:
+                    with open("data.json", "w") as json_file:
+                        json.dump(data_template, json_file)
+                except IOError as error:
+                    print(error)
 
+            # IMPORTANT this will be used later to load data into application note self.data is globally accessible
+            else:
+                try:
+                    with open("data.json", "r") as json_file:
+                        self.data = json.load(json_file)       
+                except IOError:
+                    print("there was an error")
+        elif not file.isfile("data.json"):
+            with open("data.json", "w") as json_file:
+                    json.dump(data_template, json_file)
 
     def open_explorer_desktop(self):
         self.path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
         file = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
         self.app = QRadioButton()
         self.app.setText(file)
-        self.add_data()
+        self.add_desktop()
 
-    def add_data(self):
+    def add_desktop(self):
+        try:
+            with open("data.json", "r") as json_file:
+                data = json.load(json_file)
+                data["desktop"].append(self.path[0])
+                print(data)
+                try:
+                    with open("data.json", "w") as json_file:
+                        json.dump(data, json_file)
+                except IOError as error:
+                    print(f"there was an error on line 158: {error}")
+        except IOError as error:
+                print(f"there was an error in the add_data method: {error}")
+        finally:
+            with open("data.json", "r") as json_file:
+                data = json.load(json_file)
+                print(data)
+
+    def show_desktop_apps(self):
         pass
         
 
