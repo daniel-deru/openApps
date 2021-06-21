@@ -1,6 +1,6 @@
 from os import error
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton
+from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton, QCheckBox
 import re, json, os.path as file
 
 
@@ -103,6 +103,7 @@ class Ui_OpenApps(QWidget):
         self.retranslateUi(OpenApps)
         QtCore.QMetaObject.connectSlotsByName(OpenApps)
         self.load_json()
+        self.show_desktop_apps()
 
     def retranslateUi(self, OpenApps):
         _translate = QtCore.QCoreApplication.translate
@@ -133,7 +134,8 @@ class Ui_OpenApps(QWidget):
             else:
                 try:
                     with open("data.json", "r") as json_file:
-                        self.data = json.load(json_file)       
+                        self.data = json.load(json_file)
+                        # print(self.data)     
                 except IOError:
                     print("there was an error")
         elif not file.isfile("data.json"):
@@ -142,20 +144,23 @@ class Ui_OpenApps(QWidget):
 
     def open_explorer_desktop(self):
         self.path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
-        file = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
-        self.app = QRadioButton()
-        self.app.setText(file)
+        # app = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
         self.add_desktop()
+        
 
     def add_desktop(self):
         try:
             with open("data.json", "r") as json_file:
                 data = json.load(json_file)
-                data["desktop"].append(self.path[0])
-                print(data)
+                desktop_app_info = {
+                    "path": self.path[0],
+                    "isChecked": True
+                }
+                data["desktop"].append(desktop_app_info)
+                # print(data)
                 try:
                     with open("data.json", "w") as json_file:
-                        json.dump(data, json_file)
+                        json.dump(data, json_file, indent=2)
                 except IOError as error:
                     print(f"there was an error on line 158: {error}")
         except IOError as error:
@@ -163,10 +168,22 @@ class Ui_OpenApps(QWidget):
         finally:
             with open("data.json", "r") as json_file:
                 data = json.load(json_file)
-                print(data)
+            self.load_json()
+            self.show_desktop_apps()
+                # print(data)
 
     def show_desktop_apps(self):
-        pass
+        try:
+            with open("data.json", "r") as json_file:
+                data = json.load(json_file)
+        except IOError as error:
+            print(f"there was an error in the show_desktop_apps method on line 180: {error}")
+        apps = data["desktop"]
+        for i in range(0, len(apps)):
+            app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i][0]).group()
+            print(app_name)
+            radioButton = QCheckBox(app_name)
+            self.select_desktop_gridlayout.addWidget(radioButton, 0, i)
         
 
         
