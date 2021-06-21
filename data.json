@@ -1,1 +1,37 @@
-{"desktop": [], "website": []}
+{
+  "desktop": [
+    {
+      "path": "C:/Users/danie/AppData/Roaming/uTorrent/uTorrent.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Program Files/Blackmagic Design/DaVinci Resolve/Resolve.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/AppData/Local/Programs/Microsoft VS Code/Code.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/AppData/Roaming/Zoom/bin/Zoom.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/AppData/Local/Figma/Figma.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/AppData/Local/Microsoft/Teams/Update.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/AppData/Roaming/uTorrent/uTorrent.exe",
+      "isChecked": true
+    },
+    {
+      "path": "C:/Users/danie/anaconda3/Library/bin/designer.exe",
+      "isChecked": true
+    }
+  ],
+  "website": []
+}

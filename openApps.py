@@ -179,11 +179,20 @@ class Ui_OpenApps(QWidget):
         except IOError as error:
             print(f"there was an error in the show_desktop_apps method on line 180: {error}")
         apps = data["desktop"]
-        for i in range(0, len(apps)):
-            app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i][0]).group()
-            print(app_name)
-            radioButton = QCheckBox(app_name)
-            self.select_desktop_gridlayout.addWidget(radioButton, 0, i)
+        app_count = 0
+        stop_loops = False
+        for i in range(0, 3):
+            for j in range(0, len(apps)):
+                app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[j]["path"]).group()
+                radioButton = QCheckBox(app_name)
+                self.select_desktop_gridlayout.addWidget(radioButton, j, i)
+                app_count += 1
+            
+                print(app_name)
+               
+        # print(app_count)
+        # print(len(apps))       
+            
         
 
         
