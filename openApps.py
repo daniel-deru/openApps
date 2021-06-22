@@ -1,6 +1,6 @@
 from os import error
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton, QCheckBox
+from PyQt5.QtWidgets import QFileDialog, QWidget, QRadioButton, QCheckBox, QMessageBox
 import re, json, os.path as file
 
 
@@ -145,24 +145,36 @@ class Ui_OpenApps(QWidget):
     def open_explorer_desktop(self):
         self.path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
         # app = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
+        
         self.add_desktop()
         
 
     def add_desktop(self):
         try:
             with open("data.json", "r") as json_file:
+                app = self.path[0]
                 data = json.load(json_file)
                 desktop_app_info = {
-                    "path": self.path[0],
-                    "isChecked": True
-                }
-                data["desktop"].append(desktop_app_info)
-                # print(data)
-                try:
-                    with open("data.json", "w") as json_file:
-                        json.dump(data, json_file, indent=2)
-                except IOError as error:
-                    print(f"there was an error on line 158: {error}")
+                        "path": app,
+                        "isChecked": True
+                    }
+                for i in range(0, len(data["desktop"])):
+                    print(data["desktop"])
+                if desktop_app_info in data["desktop"]:
+                    message = QMessageBox()
+                    message.setWindowTitle("There was an error")
+                    message.setIcon(QMessageBox.Warning)
+                    message.setText(f"the program {self.app_name} is already in your list")
+                    message.exec()
+
+                elif desktop_app_info not in data["desktop"]:                   
+                    data["desktop"].append(desktop_app_info)
+                    # print(data)
+                    try:
+                        with open("data.json", "w") as json_file:
+                            json.dump(data, json_file, indent=2)
+                    except IOError as error:
+                        print(f"there was an error on line 158: {error}")
         except IOError as error:
                 print(f"there was an error in the add_data method: {error}")
         finally:
@@ -179,16 +191,27 @@ class Ui_OpenApps(QWidget):
         except IOError as error:
             print(f"there was an error in the show_desktop_apps method on line 180: {error}")
         apps = data["desktop"]
-        app_count = 0
-        stop_loops = False
-        for i in range(0, 3):
-            for j in range(0, len(apps)):
-                app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[j]["path"]).group()
-                radioButton = QCheckBox(app_name)
-                self.select_desktop_gridlayout.addWidget(radioButton, j, i)
-                app_count += 1
+
+
+        # these vars control the positioning of the checkboxes 
+        # the checkboxes are not allocated with the loop for simplicity performance reasons
+        rows = 0
+        columns = 0
+
+        no_of_columns = 3
+       
+        for i in range(0, len(apps)):
+            #this if check creates a new row 
+            if (columns % no_of_columns) == 0:
+                rows += 1
+                columns = 0
+            self.app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i]["path"]).group()
+            radioButton = QCheckBox(self.app_name)
+            columns += 1
+            self.select_desktop_gridlayout.addWidget(radioButton, rows, columns)
             
-                print(app_name)
+        
+            print(self.app_name)
                
         # print(app_count)
         # print(len(apps))       
