@@ -81,7 +81,7 @@ class Ui_OpenApps(QWidget):
         self.horizontalLayout_4.addWidget(self.run_desktop_button)
 
         self.desktop_vertical_layout.addLayout(self.horizontalLayout_4)
-        
+
         self.verticalLayout_2.addLayout(self.desktop_vertical_layout)
         self.select_desktop_gridlayout = QtWidgets.QGridLayout()
         self.select_desktop_gridlayout.setObjectName("select_desktop_gridlayout")
@@ -90,10 +90,17 @@ class Ui_OpenApps(QWidget):
         self.verticalLayout_2.addItem(spacerItem1)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+
         self.run_all_button = QtWidgets.QPushButton(OpenApps)
         self.run_all_button.setStyleSheet("font: 75 18pt \"MS Shell Dlg 2\";")
         self.run_all_button.setObjectName("run_all_button")
         self.horizontalLayout_3.addWidget(self.run_all_button)
+
+        self.save_button = QtWidgets.QPushButton(OpenApps)
+        self.save_button.setStyleSheet("font: 75 18pt \"MS Shell Dlg 2\";")
+        self.save_button.setObjectName("save_button")
+        self.horizontalLayout_3.addWidget(self.save_button)
+
         self.run_on_start_radio = QtWidgets.QRadioButton(OpenApps)
         self.run_on_start_radio.setStyleSheet("font: 75 18pt \"MS Shell Dlg 2\";")
         self.run_on_start_radio.setObjectName("run_on_start_radio")
@@ -102,8 +109,9 @@ class Ui_OpenApps(QWidget):
 
         self.retranslateUi(OpenApps)
         QtCore.QMetaObject.connectSlotsByName(OpenApps)
-        self.load_json()
-        self.show_desktop_apps()
+        self.update()
+        self.update_checked()
+
 
     def retranslateUi(self, OpenApps):
         _translate = QtCore.QCoreApplication.translate
@@ -115,13 +123,16 @@ class Ui_OpenApps(QWidget):
         self.remove_desktop_button.setText(_translate("OpenApps", "Remove Desktop App"))
         self.run_desktop_button.setText(_translate("OpenApps", "Run"))
         self.run_all_button.setText(_translate("OpenApps", "Run All"))
+        self.save_button.setText(_translate("OpenApps", "Save"))
         self.run_on_start_radio.setText(_translate("OpenApps", "Run On Start Up"))
 
     def load_json(self):
         data_template = {
-                        'desktop': [],
-                        'website': []
-                    }
+            'desktop': [],
+            'desktop_is_checked': [],
+            'website': [],
+            'website_is_checked': []
+        }
         if file.isfile("data.json"):
             if file.getsize("data.json") == 0:
                 try:
@@ -140,49 +151,41 @@ class Ui_OpenApps(QWidget):
                     print("there was an error")
         elif not file.isfile("data.json"):
             with open("data.json", "w") as json_file:
-                    json.dump(data_template, json_file)
+                json.dump(data_template, json_file)
 
     def open_explorer_desktop(self):
         self.path = QFileDialog.getOpenFileName(self, "Open a file", "", "Executables (*.exe)")
         # app = re.search("(?<=/)(\w*)(?=\.exe)", self.path[0]).group()
-        
         self.add_desktop()
-        
 
     def add_desktop(self):
         try:
             with open("data.json", "r") as json_file:
                 app = self.path[0]
                 data = json.load(json_file)
-                desktop_app_info = {
-                        "path": app,
-                        "isChecked": True
-                    }
-                for i in range(0, len(data["desktop"])):
-                    print(data["desktop"])
-                if desktop_app_info in data["desktop"]:
+
+                if app in data["desktop"]:
                     message = QMessageBox()
                     message.setWindowTitle("There was an error")
                     message.setIcon(QMessageBox.Warning)
                     message.setText(f"the program {self.app_name} is already in your list")
                     message.exec()
 
-                elif desktop_app_info not in data["desktop"]:                   
-                    data["desktop"].append(desktop_app_info)
-                    # print(data)
+                elif app not in data["desktop"]:
+                    data["desktop"].append(app)
+                    data["desktop_is_checked"].append(True)
                     try:
                         with open("data.json", "w") as json_file:
                             json.dump(data, json_file, indent=2)
+
                     except IOError as error:
                         print(f"there was an error on line 158: {error}")
         except IOError as error:
-                print(f"there was an error in the add_data method: {error}")
+            print(f"there was an error in the add_data method: {error}")
         finally:
             with open("data.json", "r") as json_file:
                 data = json.load(json_file)
-            self.load_json()
-            self.show_desktop_apps()
-                # print(data)
+            self.update()
 
     def show_desktop_apps(self):
         try:
@@ -191,7 +194,7 @@ class Ui_OpenApps(QWidget):
         except IOError as error:
             print(f"there was an error in the show_desktop_apps method on line 180: {error}")
         apps = data["desktop"]
-
+        is_checked = data["desktop_is_checked"]
 
         # these vars control the positioning of the checkboxes 
         # the checkboxes are not allocated with the loop for simplicity performance reasons
@@ -199,31 +202,35 @@ class Ui_OpenApps(QWidget):
         columns = 0
 
         no_of_columns = 3
-       
+
         for i in range(0, len(apps)):
-            #this if check creates a new row 
+            # this if check creates a new row
             if (columns % no_of_columns) == 0:
                 rows += 1
                 columns = 0
-            self.app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i]["path"]).group()
-            radioButton = QCheckBox(self.app_name)
+            self.app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i]).group()
+            self.checkbox = QCheckBox(self.app_name)
+            self.checkbox.setChecked(is_checked[i])
+            self.checkbox.stateChanged.connect(self.update_checked)
             columns += 1
-            self.select_desktop_gridlayout.addWidget(radioButton, rows, columns)
-            
-        
-            print(self.app_name)
-               
-        # print(app_count)
-        # print(len(apps))       
-            
-        
+            self.select_desktop_gridlayout.addWidget(self.checkbox, rows, columns)
 
-        
-        
+    def update(self):
+        self.load_json()
+        self.show_desktop_apps()
+
+
+    def update_checked(self):
+        # print(self.checkbox.isChecked())
+        # print(self.checkbox.text())
+
+        items = self.findChildren(QWidget)
+        print(items)
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     OpenApps = QtWidgets.QWidget()
     ui = Ui_OpenApps()

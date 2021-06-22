@@ -1,29 +1,16 @@
 {
   "desktop": [
-    {
-      "path": "C:/Users/danie/AppData/Roaming/uTorrent/uTorrent.exe",
-      "isChecked": true
-    },
-    {
-      "path": "C:/Program Files/Blackmagic Design/DaVinci Resolve/Resolve.exe",
-      "isChecked": true
-    },
-    {
-      "path": "C:/Users/danie/AppData/Local/Figma/Figma.exe",
-      "isChecked": true
-    },
-    {
-      "path": "C:/Users/danie/anaconda3/Library/bin/designer.exe",
-      "isChecked": true
-    },
-    {
-      "path": "C:/Users/danie/AppData/Local/WhatsApp/WhatsApp.exe",
-      "isChecked": true
-    },
-    {
-      "path": "C:/Users/danie/AppData/Roaming/Zoom/bin/Zoom.exe",
-      "isChecked": true
-    }
+    "C:/Users/danie/AppData/Roaming/uTorrent/uTorrent.exe",
+    "C:/Program Files/Blackmagic Design/DaVinci Resolve/Resolve.exe",
+    "C:/Users/danie/AppData/Local/Figma/Figma.exe",
+    "C:/Users/danie/AppData/Local/WhatsApp/WhatsApp.exe"
   ],
-  "website": []
+  "desktop_is_checked": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "website": [],
+  "website_is_checked": []
 }
