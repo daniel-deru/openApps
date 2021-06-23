@@ -211,7 +211,8 @@ class Ui_OpenApps(QWidget):
             self.app_name = re.search("(?<=/)(\w*)(?=\.exe)", apps[i]).group()
             self.checkbox = QCheckBox(self.app_name)
             self.checkbox.setChecked(is_checked[i])
-            self.checkbox.stateChanged.connect(self.update_checked)
+            self.checkbox.setObjectName(self.app_name)
+            # self.checkbox.stateChanged.connect(self.update_checked)
             columns += 1
             self.select_desktop_gridlayout.addWidget(self.checkbox, rows, columns)
 
@@ -221,10 +222,9 @@ class Ui_OpenApps(QWidget):
 
 
     def update_checked(self):
-        # print(self.checkbox.isChecked())
-        # print(self.checkbox.text())
-
-        items = self.findChildren(QWidget)
+        # layout = self.horizontalLayout_4.itemAt(1).widget().text()
+        items = self.select_desktop_gridlayout.itemAt(1).widget().text()
+        # items = self.findChildren(QWidget)
         print(items)
 
 
