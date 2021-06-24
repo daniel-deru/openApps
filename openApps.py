@@ -96,11 +96,6 @@ class Ui_OpenApps(QWidget):
         self.run_all_button.setObjectName("run_all_button")
         self.horizontalLayout_3.addWidget(self.run_all_button)
 
-        self.save_button = QtWidgets.QPushButton(OpenApps)
-        self.save_button.setStyleSheet("font: 75 18pt \"MS Shell Dlg 2\";")
-        self.save_button.setObjectName("save_button")
-        self.horizontalLayout_3.addWidget(self.save_button)
-
         self.run_on_start_radio = QtWidgets.QRadioButton(OpenApps)
         self.run_on_start_radio.setStyleSheet("font: 75 18pt \"MS Shell Dlg 2\";")
         self.run_on_start_radio.setObjectName("run_on_start_radio")
@@ -110,8 +105,6 @@ class Ui_OpenApps(QWidget):
         self.retranslateUi(OpenApps)
         QtCore.QMetaObject.connectSlotsByName(OpenApps)
         self.update()
-        self.update_checked()
-
 
     def retranslateUi(self, OpenApps):
         _translate = QtCore.QCoreApplication.translate
@@ -123,7 +116,6 @@ class Ui_OpenApps(QWidget):
         self.remove_desktop_button.setText(_translate("OpenApps", "Remove Desktop App"))
         self.run_desktop_button.setText(_translate("OpenApps", "Run"))
         self.run_all_button.setText(_translate("OpenApps", "Run All"))
-        self.save_button.setText(_translate("OpenApps", "Save"))
         self.run_on_start_radio.setText(_translate("OpenApps", "Run On Start Up"))
 
     def load_json(self):
@@ -212,7 +204,7 @@ class Ui_OpenApps(QWidget):
             self.checkbox = QCheckBox(self.app_name)
             self.checkbox.setChecked(is_checked[i])
             self.checkbox.setObjectName(self.app_name)
-            # self.checkbox.stateChanged.connect(self.update_checked)
+            self.checkbox.stateChanged.connect(self.update_checked)
             columns += 1
             self.select_desktop_gridlayout.addWidget(self.checkbox, rows, columns)
 
@@ -220,13 +212,24 @@ class Ui_OpenApps(QWidget):
         self.load_json()
         self.show_desktop_apps()
 
-
     def update_checked(self):
-        # layout = self.horizontalLayout_4.itemAt(1).widget().text()
-        items = self.select_desktop_gridlayout.itemAt(1).widget().text()
-        # items = self.findChildren(QWidget)
-        print(items)
+        try:
+            with open("data.json", "r") as json_file:
+                data = json.load(json_file)
+                updated_state_list = []
 
+                for i in range(0, len(data["desktop_is_checked"])):
+                    items = self.select_desktop_gridlayout.itemAt(i).widget().isChecked()
+                    updated_state_list.append(items)
+                data["desktop_is_checked"] = updated_state_list
+                try:
+                    with open("data.json", "w") as json_file:
+                        json.dump(data, json_file, indent=2)
+                except IOError as error:
+                    print(f"there was an error in the update_checked method on line 235 {error}")
+
+        except IOError as error:
+            print(f"there was an error in the update_checked method on line 230 {error}")
 
 if __name__ == "__main__":
     import sys
